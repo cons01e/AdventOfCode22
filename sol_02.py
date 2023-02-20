@@ -1,4 +1,3 @@
-# part 1
 # A -> rock, B -> paper, C -> scissors
 # X -> rock, Y -> paper, Z -> scissors
 #
