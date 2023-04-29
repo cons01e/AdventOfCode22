@@ -1,29 +1,26 @@
+# Advent of Code: day 1
 
-class Snack:
-    def __init__(self, snacks, calories):
-        self.snacks = snacks
-        self.calories = calories
 
 input_file = "./input/input_01.txt"
-snacks = []
-
 with open(input_file) as file:
     lines = [line.rstrip() for line in file]
 
-current_snack = []
-current_calories = 0
+snacks = []             # list of snack tuples defined as (list of individual snacks, total calories)
+current_snack = []      # list of snack items in the current iteration
+current_calories = 0    # total calories in the current snack iteration
 for line in lines:
     if line != '':
         current_snack.append(int(line))
         current_calories += int(line)
     else:
-        snacks.append(Snack(current_snack, current_calories)) 
+        snacks.append( (current_snack, current_calories) )
         current_snack = []
         current_calories = 0
 
-snacks = sorted(snacks, key=lambda snack: snack.calories, reverse=True)
+# sort the list of snacks from highest to lowest based on total calories
+snacks = sorted(snacks, key=lambda snack: snack[1], reverse=True)
 
 print('top three snacks:')
 for i in range(3):
-    print(f'snack {i + 1}: {snacks[i].calories} calories, snacks = {snacks[i].snacks}')
-print(f'total calories in top 3: {snacks[0].calories + snacks[1].calories + snacks[2].calories}')
+    print(f'snack {i + 1}: {snacks[i][1]} calories, snacks = {snacks[i][0]}')
+print(f'total calories in top 3: {snacks[0][1] + snacks[1][1] + snacks[2][1]}')

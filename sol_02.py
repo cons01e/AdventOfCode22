@@ -1,3 +1,6 @@
+# Advent of Code: day 2
+
+# Mapping
 # A -> rock, B -> paper, C -> scissors
 # Part 1: X -> rock, Y -> paper, Z -> scissors
 # Part 2: X -> loss, Y -> draw, Z -> win
