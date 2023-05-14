@@ -1,9 +1,9 @@
 # Advent of Code: day 1
 
+import lib
 
-input_file = "./input/input_01.txt"
-with open(input_file) as file:
-    lines = [line.rstrip() for line in file]
+
+lines = lib.read_input("input/input_01.txt") 
 
 snacks = []             # list of snack tuples defined as (list of individual snacks, total calories)
 current_snack = []      # list of snack items in the current iteration
