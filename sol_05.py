@@ -7,7 +7,7 @@ import lib
 # read problem input
 sample_input = "input/sample/sample_05.txt"
 full_input = "input/full/input_05.txt"
-input_lines = lib.read_input(sample_input)
+input_lines = lib.read_input(full_input)
 
 # initialize variables
 moves = list()
@@ -22,23 +22,28 @@ for line_num, line in enumerate(input_lines):
         num_stacks = int(input_lines[line_num-1].rstrip()[-1])
         moves = input_lines[line_num+1:]
 
-        # create the character matrix (height of stacks X number of stacks)
-        char_matrix = [[0] * len(char_lines) for _ in range(num_stacks)]
+        # create the character matrix
+        # matrix must be square to allow for transposition
+        # size determined by num_stacks (num_stacks > char_lines)
+        # this leads to an additional row of 0s to be cleaned later
+        char_matrix = [[0] * num_stacks for _ in range(num_stacks)]
         for i, char_line in enumerate(char_lines):
             # start from first stack char and iterate over remaining
             for j, char_index in enumerate(range(1, len(char_line), 4)):
                 if char_line[char_index] != " ":
                     char_matrix[i][j] = char_line[char_index]
 
+
         # create the list of stacks by tranposing the character matrix
-        stacks = [[0] * len(char_lines) for _ in range(num_stacks)]
+        stacks = [[0] * num_stacks for _ in range(num_stacks)]
         for row in range(len(char_matrix)):
             for col in range(len(char_matrix)):
                 stacks[row][col] = char_matrix[col][row]
 
-        # reverse the stacks and remove the trailing 0s
+        # reverse the stacks and remove the leading and trailing 0s
         for row in stacks:
             row.reverse()
+            row.pop(0)
             while row[-1] == 0:
                 row.pop()
 
