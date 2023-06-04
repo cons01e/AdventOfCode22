@@ -68,7 +68,7 @@ for move in moves:
                 n -= 1
         case 2:
         # part 2: append last n elements of src stack onto dst stack then
-        # remove them elements from src stack
+        # remove those elements from src stack
             stacks[dst] = stacks[dst] + stacks[src][-n:]
             del stacks[src][-n:]
         case _:
