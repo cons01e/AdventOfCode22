@@ -2,9 +2,11 @@
 # Day 5
 
 
+import sys
 import lib
 
 # read problem input
+part = int(sys.argv[1])
 sample_input = "input/sample/sample_05.txt"
 full_input = "input/full/input_05.txt"
 input_lines = lib.read_input(full_input)
@@ -58,10 +60,20 @@ for move in moves:
     src = int(move_words[3]) - 1 # decrement for 0 indexed stack list
     dst = int(move_words[5]) - 1
 
-    # for each move n, pop from src stack onto dst stack
-    while n > 0:
-        stacks[dst].append(stacks[src].pop())
-        n -= 1
+    match part:
+        case 1:
+        # part 1: for each move n, pop from src stack onto dst stack
+            while n > 0:
+                stacks[dst].append(stacks[src].pop())
+                n -= 1
+        case 2:
+        # part 2: append last n elements of src stack onto dst stack then
+        # remove them elements from src stack
+            stacks[dst] = stacks[dst] + stacks[src][-n:]
+            del stacks[src][-n:]
+        case _:
+            print("unexpected part number")
+            quit()
 
 # read the top of each stack
 stack_tops = "".join([stack[-1] for stack in stacks])
