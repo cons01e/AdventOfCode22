@@ -1,6 +1,6 @@
 # Advent of Code: Day 7
 
-import re
+
 import lib
 
 
@@ -29,6 +29,14 @@ def find_valid_dirs(node, valid_nodes, filesize):
     for dir in node.dirs:
         find_valid_dirs(dir, valid_nodes, filesize)
 
+def find_smallest_valid_dir(node, min_size, current_smallest):
+    if node.size >= min_size and node.size < current_smallest.size:
+        current_smallest = node
+    for dir in node.dirs:
+        small_node = find_smallest_valid_dir(dir, min_size, current_smallest)
+        if small_node.size < current_smallest.size:
+            current_smallest = small_node
+    return current_smallest
 
 sample_data_file = "input/sample/sample_07.txt"
 full_data_file = "input/full/input_07.txt"
@@ -74,5 +82,14 @@ total_size = 0
 for dir in valid_dirs:
     total_size += dir.size
 
+filesystem_size = 70000000
+update_size = 30000000
+
+min_file_size = update_size - (filesystem_size - root.size)
+
+smallest = root
+smallest = find_smallest_valid_dir(root, min_file_size, smallest)
+
 print(f"Total size: {total_size}")
+print(f"Smallest valid dir: {smallest.name}, {smallest.size}")
 
