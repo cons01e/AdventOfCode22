@@ -6,7 +6,6 @@ import lib
 
 class Node:
     def __init__(self, parent, name):
-        print(f"initializing node: {parent}, {name}")
         self.parent = parent
         self.dirs = []
         self.files = []
@@ -37,7 +36,6 @@ lines = lib.read_input(full_data_file)
 
 node_ptr = root = None
 for line in lines:
-    # print(line)
     # handle commands
     if line[0] == "$":
         line_elements = line.split(" ")
@@ -66,14 +64,14 @@ for line in lines:
 # compute dir sizes
 root.compute_size()
 
+# find dirs with size under 100000
 valid_dirs = []
 filesize = 100000
-
 find_valid_dirs(root, valid_dirs, filesize)
 
+# compute the total size of valid dirs
 total_size = 0
 for dir in valid_dirs:
-    print(f"{dir.name}, {dir.size}")
     total_size += dir.size
 
 print(f"Total size: {total_size}")
