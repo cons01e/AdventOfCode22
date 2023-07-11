@@ -8,13 +8,10 @@ import lib
 
 
 def directional_score(cell_val, subrange):
-    cell_val = int(cell_val)
     if len(subrange) == 0:
         return 0
-    #if cell_val <= int(subrange[0]):
-    #    return 1
     for i, el in enumerate(subrange, 1):
-        if cell_val <= int(el):
+        if cell_val <= el:
             break
     return i
 
@@ -25,13 +22,13 @@ full_data_file = "input/full/input_08.txt"
 lines = lib.read_input(full_data_file)
 
 # convert line strings into arrays before passing to numpy constructor
-M = numpy.array([list(line) for line in lines])
+M = numpy.array([list(map(int, line)) for line in lines])
 N = numpy.zeros(M.shape)
 
 for i, row in enumerate(M):
     # set row ends to 1
     N[i, 0] = N[i, len(row) - 1] = 1
-    
+
     # scan right
     row_max = int(row[0])
     for j in range(1, len(row)):
