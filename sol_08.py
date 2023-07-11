@@ -7,6 +7,12 @@ import functools
 import lib
 
 
+def visibility_score(cell_val, subranges):
+    for sr in subranges:
+        if len(sr) == 0 or cell_val > max(sr):
+            return 1
+    return 0
+
 def directional_score(cell_val, subrange):
     if len(subrange) == 0:
         return 0
@@ -16,73 +22,14 @@ def directional_score(cell_val, subrange):
     return i
 
 
+# PARSE INPUT
 sample_data_file = "input/sample/sample_08.txt"
 full_data_file = "input/full/input_08.txt"
-
 lines = lib.read_input(full_data_file)
-
-# convert line strings into arrays before passing to numpy constructor
 M = numpy.array([list(map(int, line)) for line in lines])
-N = numpy.zeros(M.shape)
 
-for i, row in enumerate(M):
-    # set row ends to 1
-    N[i, 0] = N[i, len(row) - 1] = 1
-
-    # scan right
-    row_max = int(row[0])
-    for j in range(1, len(row)):
-        cell_val = int(row[j])
-        if cell_val > row_max:
-            row_max = cell_val
-            N[i, j] = 1
-            if cell_val == 9:
-                break
-
-    # scan left
-    prev_row_max = row_max
-    row_max = int(row[len(row) - 1])
-    for j in range(len(row) - 2, 0, -1):
-        cell_val = int(row[j])
-        if cell_val > row_max:
-            row_max = cell_val
-            N[i, j] = 1
-            if cell_val == 9 or cell_val == prev_row_max:
-                break
-
-N = N.T
-M = M.T
-for i, row in enumerate(M):
-    # set row ends to 1
-    N[i, 0] = N[i, len(row) - 1] = 1
-    
-    # scan right
-    row_max = int(row[0])
-    for j in range(1, len(row)):
-        cell_val = int(row[j])
-        if cell_val > row_max:
-            row_max = cell_val
-            N[i, j] = 1
-            if cell_val == 9:
-                break
-
-    # scan left
-    prev_row_max = row_max
-    row_max = int(row[len(row) - 1])
-    for j in range(len(row) - 2, 0, -1):
-        cell_val = int(row[j])
-        if cell_val > row_max:
-            row_max = cell_val
-            N[i, j] = 1
-            if cell_val == 9 or cell_val == prev_row_max:
-                break
-
-print(N.sum())
-
-
-# part 2
+num_visible_trees = 0
 max_score = 0
-M = M.T
 for i, row in enumerate(M):
     for j, cell_val in enumerate(row):
         col = M[:, j]
@@ -92,10 +39,15 @@ for i, row in enumerate(M):
             col[i+1:],                  # down
             list(reversed(col[:i]))     # up
         ]
-        scores = [directional_score(cell_val, sr) for sr in subranges]
-        total_score = functools.reduce(operator.mul, scores, 1)
+        
+        # PART 1
+        num_visible_trees += visibility_score(cell_val, subranges)
+
+        # PART 2
+        directional_scores = [directional_score(cell_val, sr) for sr in subranges]
+        total_score = functools.reduce(operator.mul, directional_scores, 1)
         if total_score > max_score:
             max_score = total_score
 
-print(max_score)
+print(num_visible_trees, max_score)
 
