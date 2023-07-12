@@ -2,8 +2,7 @@
 # Day 8
 
 import numpy
-import operator
-import functools
+from math import prod
 import lib
 
 
@@ -28,7 +27,7 @@ full_data_file = "input/full/input_08.txt"
 lines = lib.read_input(full_data_file)
 M = numpy.array([list(map(int, line)) for line in lines])
 
-num_visible_trees = 0
+visible_trees = 0
 max_score = 0
 for i, row in enumerate(M):
     for j, cell_val in enumerate(row):
@@ -41,13 +40,12 @@ for i, row in enumerate(M):
         ]
         
         # PART 1
-        num_visible_trees += visibility_score(cell_val, subranges)
+        visible_trees += visibility_score(cell_val, subranges)
 
         # PART 2
-        directional_scores = [directional_score(cell_val, sr) for sr in subranges]
-        total_score = functools.reduce(operator.mul, directional_scores, 1)
-        if total_score > max_score:
-            max_score = total_score
+        score = prod([directional_score(cell_val, sr) for sr in subranges])
+        if score > max_score:
+            max_score = score
 
-print(num_visible_trees, max_score)
+print(visible_trees, max_score)
 
