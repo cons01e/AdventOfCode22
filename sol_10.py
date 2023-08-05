@@ -22,11 +22,8 @@ class Crt:
     def update_sprite(self, x_val):
         self.sprite = range(x_val - 1, x_val + 2)
 
-    def print(self):
-        for row in range(self.rows):
-            for col in range(self.row_pixels):
-                print(self.display[row, col], end='')
-            print()
+    def print_display(self):
+        [print(''.join([p for p in row])) for row in self.display]
 
 class Cpu:
     def __init__(self, cycle=0, x=1, crt=Crt()):
@@ -64,5 +61,5 @@ for ins in full_input_data:
         cpu.execute_addx(x_val)
 
 print(sum(cpu.signals))
-cpu.crt.print()
+cpu.crt.print_display()
 
