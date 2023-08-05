@@ -6,63 +6,63 @@ import lib
 from numpy import full
 
 
-def draw_pixel(crt, cycle, x):
-    row = cycle // 40
-    col = cycle % 40
-    sprite = range(x - 1, x + 2)
-    crt_char = '#' if col in sprite else '.'
-    print(cycle_count, x, sprite, crt_char, row, col)
-    crt[row, col] = crt_char
+class Crt:
+    def __init__(self, rows=6, row_pixels=40):
+        self.rows = rows
+        self.row_pixels = row_pixels
+        self.display = full((self.rows, self.row_pixels), '0')
+        self.sprite = range(3)
+
+    def draw_pixel(self, cpu_cycle):
+        row = cpu_cycle // self.row_pixels
+        pixel = cpu_cycle % self.row_pixels
+        display_char = '#' if pixel in self.sprite else '.'
+        self.display[row, pixel] = display_char
+
+    def update_sprite(self, x_val):
+        self.sprite = range(x_val - 1, x_val + 2)
+
+    def print(self):
+        for row in range(self.rows):
+            for col in range(self.row_pixels):
+                print(self.display[row, col], end='')
+            print()
+
+class Cpu:
+    def __init__(self, cycle=0, x=1, crt=Crt()):
+        self.cycle = cycle
+        self.x = x
+        self.checked_cycles = [20, 60, 100, 140, 180, 220]
+        self.signals = []
+        self.crt = crt
+
+    def execute_noop(self):
+        self.execute_cycle()
+
+    def execute_addx(self, x_val):
+        self.execute_cycle()
+        self.execute_cycle()
+        self.x += x_val
+        self.crt.update_sprite(self.x)
+
+    def execute_cycle(self):
+        self.crt.draw_pixel(self.cycle)
+        self.cycle += 1
+        if self.cycle in self.checked_cycles:
+            self.signals.append(self.cycle * self.x)
 
 
-sid = lib.read_input("input/sample/sample_10.txt")
-fid = lib.read_input("input/full/input_10.txt")
+sample_input_data = lib.read_input("input/sample/sample_10.txt")
+full_input_data = lib.read_input("input/full/input_10.txt")
 
-cycle_count = 0
-x = 1
-check_cycles = [20, 60, 100, 140, 180, 220]
-check_signals = []
-crt = full((6,40), '0')
-print(crt)
-
-for ins in fid:
-    draw_pixel(crt, cycle_count, x)
-    cycle_count += 1
-
+cpu = Cpu()
+for ins in full_input_data:
     if ins == "noop":
-        continue
+        cpu.execute_noop()
+    else:
+        x_val = int(ins.split(" ")[-1])
+        cpu.execute_addx(x_val)
 
-    draw_pixel(crt, cycle_count, x)
-    x += int(ins.split(" ")[1])
-    cycle_count += 1
-
-   # if ins == "noop":
-   #     ins_type = ins
-   #     cycles = 1
-   # else:
-   #     ins_type, x_inc = ins.split(" ")
-   #     cycles = 2
-
-   # for cycle in range(1, cycles + 1):
-   #     # part 2
-   #     sprite_range = range(x - 1, x + 1)
-   #     crt_row = cycle_count // 40
-   #     crt_row_pos = cycle_count % 40
-   #     crt_char = '#' if cycle_count in sprite_range else '.'
-   #     print(cycle_count, crt_row, crt_row_pos)
-   #     crt[crt_row, crt_row_pos] = crt_char
-
-   #     cycle_count += 1
-   #     if ins_type == "addx" and cycle == cycles:
-   #         x += int(x_inc)
-   #     if cycle_count in check_cycles:
-   #         check_signals.append(cycle_count * x)
-
-print(sum(check_signals))
-print(crt)
-
-for row in range(6):
-    for col in range(40):
-        print(crt[row, col], end='')
-    print()
+print(sum(cpu.signals))
+cpu.crt.print()
 
